@@ -46,7 +46,7 @@ model.summary()
 
 model.compile(loss="binary_crossentropy",optimizer="Adam")
 
-"""**training**"""
+"""**training format with dummy data**"""
 
 x=np.random.randn(2,128,128,3)
 y=np.array([0])
