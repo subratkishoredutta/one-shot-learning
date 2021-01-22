@@ -43,18 +43,3 @@ def siamese(input_shape):
 model=siamese((128,128,3))
 
 model.summary()
-
-model.compile(loss="binary_crossentropy",optimizer="Adam")
-
-"""**training format with dummy data**"""
-
-x=np.random.randn(2,128,128,3)
-y=np.array([0])
-
-X1=np.reshape(x[0],(-1,128,128,3))
-X2=np.reshape(x[1],(-1,128,128,3))
-
-x.shape
-
-model.fit([X1,X2],[y],epochs=2)
-
