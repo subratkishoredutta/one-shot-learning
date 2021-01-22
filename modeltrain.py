@@ -6,10 +6,15 @@ Created on Fri Jan 22 11:57:53 2021
 """
 import os
 import cv2
-import numpy as np
 import matplotlib.pyplot as plt
 from tqdm import tqdm
+import tensorflow as tf
+import tensorflow.keras.backend as K
+import numpy as np
+from tensorflow.keras.models import Sequential,Model
+from tensorflow.keras.layers import Dense,Flatten,Conv2D,MaxPool2D,BatchNormalization,Input,Lambda  
 
+##creating the training data 
 posAnchor='D:/coursera/deep learning specialisation/siamese/pos/Anchor/'
 negAnchor='D:/coursera/deep learning specialisation/siamese/negative/neganchor/'
 
@@ -43,18 +48,14 @@ for Aname,Rname in tqdm(zip(os.listdir(negAnchor),os.listdir(negref))):
         RNimages[i]=Rimg
         i+=1
 
-XA=np.concatenate((APimages,ANimages),axis=0)
-XR=np.concatenate((RPimages,RNimages),axis=0)
-Y1= np.ones(APimages.shape[0],dtype=np.uint8)
-Y2=np.zeros(ANimages.shape[0],dtype=np.uint8)
+XA=np.concatenate((APimages,ANimages),axis=0)##anchor images
+XR=np.concatenate((RPimages,RNimages),axis=0)##reference images
+Y1= np.ones(APimages.shape[0],dtype=np.uint8)#labels for images with same person
+Y2=np.zeros(ANimages.shape[0],dtype=np.uint8)#label for images with different person
 Y=np.concatenate((Y1,Y2),axis=None)
 
-
-import tensorflow as tf
-import tensorflow.keras.backend as K
-import numpy as np
-from tensorflow.keras.models import Sequential,Model
-from tensorflow.keras.layers import Dense,Flatten,Conv2D,MaxPool2D,BatchNormalization,Input,Lambda       
+#model declaration
+     
         
 def siamese(input_shape):
   base_input=Input(input_shape)
@@ -81,5 +82,5 @@ model,mdl=siamese((128,128,3))
         
 model.compile(loss="binary_crossentropy",optimizer="Adam",metrics=["accuracy"])
 
-
+#model training
 model.fit([XA,XR],[Y],epochs=10)
