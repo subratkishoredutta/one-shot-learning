@@ -24,12 +24,12 @@ def siamese(input_shape):
   test_input=Input(input_shape)
 
   model=Sequential()
-  model.add(Conv2D(5,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
-  model.add(Conv2D(25,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
+  model.add(Conv2D(64,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
+  model.add(Conv2D(64,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
   model.add(MaxPool2D((2,2),padding='same'))
-  model.add(Conv2D(125,(3,3),padding="same",activation="relu",kernel_initializer="he_normal"))
+  model.add(Conv2D(64,(3,3),padding="same",activation="relu",kernel_initializer="he_normal"))
   model.add(Flatten())
-  model.add(Dense(128,activation="relu"))
+  model.add(Dense(50,activation="relu"))
 
   Aencod=model(base_input)
   Tencod=model(test_input)
