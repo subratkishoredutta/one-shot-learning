@@ -16,15 +16,15 @@ negAnchor='D:/coursera/deep learning specialisation/siamese/negative/neganchor/'
 posref='D:/coursera/deep learning specialisation/siamese/pos/Reference/'
 negref='D:/coursera/deep learning specialisation/siamese/negative/negReference/'
 
-APimages=np.zeros((len(os.listdir(posAnchor)), 128, 128,3),dtype=np.uint8)
-RPimages=np.zeros((len(os.listdir(posref)), 128, 128,3),dtype=np.uint8)
+APimages=np.zeros((80000, 128, 128,3),dtype=np.uint8)
+RPimages=np.zeros((80000, 128, 128,3),dtype=np.uint8)
 
-ANimages=np.zeros((len(os.listdir(negAnchor)), 128, 128,3),dtype=np.uint8)
-RNimages=np.zeros((len(os.listdir(negref)), 128, 128,3),dtype=np.uint8)
+ANimages=np.zeros((80000, 128, 128,3),dtype=np.uint8)
+RNimages=np.zeros((80000, 128, 128,3),dtype=np.uint8)
 
 i=0
 for Aname,Rname in tqdm(zip(os.listdir(posAnchor),os.listdir(posref))):
-    if Aname==Rname:
+    if Aname==Rname and i<80000:
         Apath=os.path.join(posAnchor,Aname)
         Rpath=os.path.join(posref,Rname)
         Aimg=cv2.imread(Apath)
@@ -34,7 +34,7 @@ for Aname,Rname in tqdm(zip(os.listdir(posAnchor),os.listdir(posref))):
         i+=1
 i=0
 for Aname,Rname in tqdm(zip(os.listdir(negAnchor),os.listdir(negref))):
-    if Aname==Rname:
+    if Aname==Rname and i<80000:
         Apath=os.path.join(negAnchor,Aname)
         Rpath=os.path.join(negref,Rname)
         Aimg=cv2.imread(Apath)
@@ -66,12 +66,12 @@ def siamese(input_shape):
   test_input=Input(input_shape)
 
   model=Sequential()
-  model.add(Conv2D(5,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
-  model.add(Conv2D(25,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
+  model.add(Conv2D(64,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
+  model.add(Conv2D(64,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
   model.add(MaxPool2D((2,2),padding='same'))
-  model.add(Conv2D(125,(3,3),padding="same",activation="relu",kernel_initializer="he_normal"))
+  model.add(Conv2D(64,(3,3),padding="same",activation="relu",kernel_initializer="he_normal"))
   model.add(Flatten())
-  model.add(Dense(128,activation="relu",name="OUT"))
+  model.add(Dense(50,activation="relu",name="OUT"))
 
   Aencod=model(base_input)
   Tencod=model(test_input)
@@ -87,7 +87,7 @@ model,mdl=siamese((128,128,3))
 model.compile(loss="binary_crossentropy",optimizer="Adam",metrics=["accuracy"])
 
 
-model.fit([XA,XR],[Y],epochs=10)
+model.fit([XA[:30000],XR[:30000]],[Y[:30000]],validation_split = 0.1,batch_size=64,epochs=1000)
 
 
-model.save('siamese.h5')
+model.save('siamese110.h5')
