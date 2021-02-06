@@ -20,16 +20,28 @@ from tensorflow.keras.layers import Dense,Flatten,Conv2D,MaxPool2D,BatchNormaliz
 """**siamese network**"""
 
 def siamese(input_shape):
+  
   base_input=Input(input_shape)
   test_input=Input(input_shape)
 
   model=Sequential()
-  model.add(Conv2D(64,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
-  model.add(Conv2D(64,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
+  model.add(Conv2D(512,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
   model.add(MaxPool2D((2,2),padding='same'))
-  model.add(Conv2D(64,(3,3),padding="same",activation="relu",kernel_initializer="he_normal"))
+  model.add(Dropout(0.2))
+  model.add(BatchNormalization())
+  model.add(Conv2D(1024,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
+  model.add(MaxPool2D((2,2),padding='same'))
+  model.add(Dropout(0.2))
+  model.add(BatchNormalization())
+  model.add(Conv2D(1024,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
+  model.add(MaxPool2D((2,2),padding='same'))
+  model.add(BatchNormalization())
+  model.add(Dropout(0.2))
+  model.add(Conv2D(512,(3,3),padding='same',activation="relu",kernel_initializer="he_normal"))
+  model.add(MaxPool2D((2,2),padding='same'))
+  model.add(Conv2D(256,(3,3),padding="same",activation="relu",kernel_initializer="he_normal"))
   model.add(Flatten())
-  model.add(Dense(50,activation="relu"))
+  model.add(Dense(128,activation="relu",name="OUT"))
 
   Aencod=model(base_input)
   Tencod=model(test_input)
@@ -38,7 +50,8 @@ def siamese(input_shape):
   ldist=dLayer([Aencod,Tencod])
   output=Dense(1,activation="sigmoid")(ldist)
   network=Model(inputs=[base_input,test_input],outputs=output)
-  return network
+  return (network,model)       
+        
 
 model=siamese((128,128,3))
 
