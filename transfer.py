@@ -30,7 +30,7 @@ def siamese():
       layer.trainable = False
   model.add(vgg)
   model.add(Flatten())
-  model.add(Dense(128, activation='relu'))
+  model.add(Dense(512, activation='sigmoid'))
   
   Aencod=model(base_input)
   
