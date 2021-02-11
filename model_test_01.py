@@ -41,7 +41,7 @@ def siamese(input_shape):
   model.add(MaxPool2D((2,2),padding='same'))
   model.add(Conv2D(256,(3,3),padding="same",activation="relu",kernel_initializer="he_normal"))
   model.add(Flatten())
-  model.add(Dense(128,activation="relu",name="OUT"))
+  model.add(Dense(128,activation="sigmoid",name="OUT"))
 
   Aencod=model(base_input)
   Tencod=model(test_input)
